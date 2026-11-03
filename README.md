@@ -52,7 +52,9 @@ tad13/
         ├── index.html
         ├── styles.css
         ├── data.js
-        └── app.js
+        ├── app.js
+        └── tests/
+            └── data.test.mjs
 ```
 
 Se prevén `data/raw/` para entradas locales, `data/processed/` para resultados,
@@ -80,8 +82,13 @@ su interpretación depende, entre otros factores, de la denuncia y del registro.
 
 El nombre y el logo están por definir. El tablero presenta **datos sintéticos**:
 no son cifras reales y no permiten sacar conclusiones sobre la criminalidad.
-Incluye filtros por año, departamento y categoría para explorar la interfaz. La
-muestra territorial y las categorías son ilustrativas; 2026 también es simulado.
+Incluye filtros por año, departamento y categoría, indicadores y porcentajes,
+descargas CSV de la selección simulada, documentación resumida y una sección sobre
+el proyecto. La muestra territorial y las categorías son ilustrativas; 2026 también
+es simulado. El asistente funciona localmente con respuestas predefinidas basadas
+en los filtros: **no es una IA conectada**, no consulta fuentes externas y no envía
+mensajes a ningún servidor. Una integración real requeriría diseño, configuración
+y protección de datos adicionales.
 
 Desde la raíz del repositorio, ejecuta en PowerShell:
 
@@ -91,6 +98,12 @@ python -m http.server 8000 --bind 127.0.0.1
 
 Abre `http://localhost:8000/src/web/` en tu navegador. Para detener el servidor,
 pulsa `Ctrl+C`. No requiere instalar dependencias para el prototipo.
+
+Para comprobar los cálculos, filtros y descargas con Node.js, ejecuta:
+
+```powershell
+node --test src/web/tests/data.test.mjs
+```
 
 ## Ejecución del ETL
 
