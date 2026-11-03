@@ -39,29 +39,19 @@ versiones, dependencias y la elección de la aplicación web están por definir.
 ```text
 tad13/
 ├── README.md
-├── .gitignore
-├── docs/
-│   ├── 01-propuesta.md
-│   ├── 02-arquitectura.md
-│   ├── 03-base-datos.md
-│   └── 04-manual-usuario.md
-└── src/
-    ├── etl/
-    │   └── cargar_datos.py
-    └── web/
-        ├── index.html
-        ├── styles.css
-        ├── data.js
-        ├── app.js
-        └── tests/
-            └── data.test.mjs
+├── requirements.txt
+├── docs/                       # Documentación preliminar
+├── src/
+│   ├── etl/cargar_datos.py     # ETL aún no implementado
+│   ├── server/main.py          # Servidor web y puente a Gemini
+│   └── web/                    # Páginas, gráficos y datos sintéticos
+└── tests/                      # Pruebas del servidor
 ```
 
 Se prevén `data/raw/` para entradas locales, `data/processed/` para resultados,
 `src/analytics/` para análisis y `dashboards/` para Power BI. Estas carpetas aún
-no forman parte del repositorio; `src/web/` contiene el prototipo. La documentación de
-arquitectura, base de datos y uso también es preliminar y deberá actualizarse al
-aprobar el diseño.
+no forman parte del repositorio. La documentación de arquitectura, base de datos y
+uso es preliminar y deberá actualizarse al aprobar el diseño.
 
 ## Fuentes y manejo de datos
 
@@ -78,32 +68,65 @@ sensibilidad, licencia y tamaño de cualquier dato procesado antes de compartirl
 Las cifras registradas no equivalen necesariamente a todos los delitos ocurridos:
 su interpretación depende, entre otros factores, de la denuncia y del registro.
 
-## Prototipo web
+## Prototipo web y asistente
 
-El nombre y el logo están por definir. El tablero presenta **datos sintéticos**:
-no son cifras reales y no permiten sacar conclusiones sobre la criminalidad.
-Incluye filtros por año, departamento y categoría, indicadores y porcentajes,
-descargas CSV de la selección simulada, documentación resumida y una sección sobre
-el proyecto. La muestra territorial y las categorías son ilustrativas; 2026 también
-es simulado. El asistente funciona localmente con respuestas predefinidas basadas
-en los filtros: **no es una IA conectada**, no consulta fuentes externas y no envía
-mensajes a ningún servidor. Una integración real requeriría diseño, configuración
-y protección de datos adicionales.
+El nombre y el logo están por definir. La aplicación tiene páginas independientes
+para vista general, asistente, descargas, documentación y proyecto. Los filtros se
+conservan durante la sesión del navegador y se aplican al tablero, a las descargas
+y a la siguiente consulta del asistente.
 
-Desde la raíz del repositorio, ejecuta en PowerShell:
+**Todos los datos son sintéticos**: no son cifras reales ni provienen de SIEDCO.
+La muestra territorial y las categorías son ilustrativas; 2026 también es simulado.
+
+El servidor ofrece `POST /api/chat` y solicita respuestas a Gemini usando la
+selección sintética calculada en el servidor. La pregunta y la selección se envían
+a Google; no envíes información personal o sensible. Cada pregunta se procesa por
+separado, sin historial conversacional. La IA puede equivocarse: revisa sus
+respuestas y no las uses como evidencia sobre criminalidad real.
+
+### Ejecución local (PowerShell)
+
+Instala las dependencias y ejecuta el servidor desde la raíz del repositorio:
 
 ```powershell
-python -m http.server 8000 --bind 127.0.0.1
+python -m pip install -r requirements.txt
+python -m uvicorn src.server.main:app --host 127.0.0.1 --port 8000
 ```
 
-Abre `http://localhost:8000/src/web/` en tu navegador. Para detener el servidor,
-pulsa `Ctrl+C`. No requiere instalar dependencias para el prototipo.
+Abre `http://localhost:8000/`. Para detenerlo, pulsa `Ctrl+C`. Sin configuración,
+las páginas y descargas funcionan, pero el asistente informa que no está configurado.
+Para habilitar Gemini, configura de forma segura la variable de entorno
+`GEMINI_API_KEY` en el proceso servidor; no pegues la clave en el chat ni la subas al
+repositorio. Opcionalmente, `GEMINI_MODEL` selecciona un modelo compatible; el valor
+predeterminado es `gemini-2.5-flash`. La clave debe tener acceso a la API y puede
+estar sujeta a cuotas o costos. No se requiere crear un archivo `.env`.
 
-Para comprobar los cálculos, filtros y descargas con Node.js, ejecuta:
+### Publicación y seguridad
+
+GitHub Pages solo sirve archivos estáticos y **no puede ejecutar el backend**. Para
+que el asistente funcione públicamente, aloja esta aplicación Python y la web en el
+mismo servicio HTTPS, instala `requirements.txt`, configura `GEMINI_API_KEY` como
+secreto del proveedor y arranca Uvicorn en `0.0.0.0` y el puerto que indique ese
+proveedor. El navegador llama a `/api/chat` en el mismo origen; no recibe la clave.
+La cuenta de alojamiento, el secreto y el despliegue aún no se han configurado.
+
+El límite en memoria (8 solicitudes por minuto por cliente y 300 por día por
+proceso) es solo una protección básica: se reinicia al reiniciar y no se comparte
+entre réplicas; detrás de un proxy varios usuarios pueden compartir una dirección.
+Antes de abrirlo al público, configura límites de cuota y facturación en Google,
+control de acceso o protección contra abuso en el alojamiento, límites de tamaño
+de petición y supervisión. No expongas datos reales sin revisar privacidad,
+licencias y la política de tratamiento del proveedor.
+
+### Pruebas
 
 ```powershell
+python -m unittest discover -s tests -v
 node --test src/web/tests/data.test.mjs
 ```
+
+Las pruebas del servidor simulan Gemini; no verifican la clave ni la conectividad
+real con Google.
 
 ## Ejecución del ETL
 

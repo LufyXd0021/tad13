@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#173d33"><title>Descargas | Observatorio</title><link rel="stylesheet" href="styles.css"></head>
+<body><div class="app-shell"><aside aria-label="Navegación principal" class="sidebar">
+<a aria-label="Observatorio, inicio" class="brand" href="index.html">
+<span aria-hidden="true" class="brand-mark"><svg fill="none" viewbox="0 0 32 32"><path d="M5 22.5 12 15l5 4 10-11" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.7"></path><circle cx="27" cy="8" fill="currentColor" r="2.5"></circle></svg></span>
+<span><strong>observatorio<span class="brand-dot">.</span></strong><small>Nombre provisional</small></span>
+</a>
+<div class="side-label">ESPACIO DE TRABAJO</div>
+<nav class="side-nav">
+<a class="nav-item" href="index.html"><span data-icon="grid"></span> Vista general <span class="nav-arrow">↗</span></a>
+<a class="nav-item" href="index.html#tendencias"><span data-icon="chart"></span> Tendencias</a>
+<a class="nav-item" href="index.html#territorios"><span data-icon="pin"></span> Territorios</a>
+<a class="nav-item" href="index.html#categorias"><span data-icon="layers"></span> Categorías</a>
+</nav>
+<div class="side-label resources-label">PROYECTO</div>
+<nav class="side-nav project-nav">
+<a class="nav-item" href="asistente.html"><span data-icon="spark"></span> Asistente</a>
+<a aria-current="page" class="nav-item active" href="descargas.html"><span data-icon="download"></span> Descargas</a>
+<a class="nav-item" href="documentacion.html"><span data-icon="book"></span> Documentación</a>
+<a class="nav-item" href="conocenos.html"><span data-icon="people"></span> Conócenos</a>
+</nav>
+<div class="sidebar-bottom">
+<div class="side-note"><span class="side-note-icon" data-icon="spark"></span><strong>Un proyecto en construcción</strong><p>Explora el prototipo mientras definimos su identidad y fuentes.</p><a href="documentacion.html">Conocer más <span>↗</span></a></div>
+<div class="side-footer"><span class="avatar">T</span><span><strong>Proyecto TAD-13</strong><small>Entorno de demostración</small></span><span class="footer-dots">···</span></div>
+</div>
+</aside><main class="main" id="inicio"><header class="topbar"><div class="breadcrumb">Proyecto <span>/</span> <strong>Descargas</strong></div><div class="top-actions"><span class="top-status"><i></i> PROTOTIPO</span><span class="top-divider"></span><span class="top-avatar">T</span></div></header><div class="content"><div class="demo-banner"><span data-icon="info"></span><p><strong>Estás viendo una demostración.</strong> Todos los datos son simulados y no representan cifras reales de criminalidad.</p><a href="documentacion.html">Más información <span>↗</span></a></div>
+<div class="page-heading subpage-heading"><div><div class="eyebrow"><span></span> RECURSOS DEL OBSERVATORIO</div><h1>Información <em>para llevar.</em></h1><p>Descarga la selección simulada y continúa explorando.</p></div></div><section aria-label="Filtros del tablero" class="filter-bar"><div class="filter-intro"><span data-icon="filter"></span><div><strong>Explorar datos</strong><small>Personaliza tu vista</small></div></div><div class="filter-controls"><label><span>PERIODO</span><select aria-label="Filtrar por periodo" id="year-filter"><option value="todos">Todos los años</option></select></label><label><span>DEPARTAMENTO</span><select aria-label="Filtrar por departamento" id="region-filter"><option value="todos">Todos los departamentos</option></select></label><label><span>CATEGORÍA</span><select aria-label="Filtrar por categoría" id="category-filter"><option value="todos">Todas las categorías</option></select></label><button aria-label="Restablecer filtros" class="reset-button" id="reset" title="Restablecer filtros" type="button"><span data-icon="refresh"></span></button></div></section><div class="section-heading section-space"><div><span class="section-kicker">RECURSOS / DATOS SIMULADOS</span><h2>Llévate la información</h2><p class="section-description">Descargas generadas en tu navegador con la selección actual.</p></div></div><section aria-label="Descargas de demostración" class="downloads-grid"><article class="download-card"><span class="download-icon" data-icon="download"></span><div><span class="download-type">CSV · DATOS SIMULADOS</span><h3>Datos de la selección</h3><p>Filas mensuales por año, territorio y categoría.</p></div><button aria-label="Descargar datos simulados filtrados" id="download-data" type="button">↓</button></article><article class="download-card"><span class="download-icon sand" data-icon="chart"></span><div><span class="download-type">CSV · RESUMEN SIMULADO</span><h3>Resumen por categoría</h3><p>Totales y porcentajes de los filtros aplicados.</p></div><button aria-label="Descargar resumen simulado por categoría" id="download-summary" type="button">↓</button></article></section><div class="download-explainer"><strong>Antes de utilizar estos archivos</strong><p>Los CSV contienen únicamente datos generados para la demostración. No son datos SIEDCO y no sirven para describir la criminalidad real.</p><a href="documentacion.html">Conoce las limitaciones ↗</a></div>
+<footer class="page-footer"><span>© 2026 TAD-13 · Nombre e identidad por definir</span><span>Hecho para explorar con propósito <span class="footer-star">✳</span></span></footer></div></main></div><script type="module" src="app.js"></script></body></html>

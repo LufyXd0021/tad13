@@ -1,4 +1,4 @@
-import {years, regions, categories, colors, months, makeDemoData, filterRows, sum, grouped, summarize, answerQuestion, demoCsv} from './data.js';
+import {years, regions, categories, colors, months, makeDemoData, filterRows, sum, grouped, summarize, demoCsv} from './data.js';
 
 const icons = {
   grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
@@ -15,9 +15,19 @@ const rows = makeDemoData();
 const yearSelect = document.querySelector('#year-filter');
 const regionSelect = document.querySelector('#region-filter');
 const categorySelect = document.querySelector('#category-filter');
-function addOptions(select, options) { options.forEach(value => select.add(new Option(value, value))); }
+function addOptions(select, options) { if (select) options.forEach(value => select.add(new Option(value, value))); }
 addOptions(yearSelect, years); addOptions(regionSelect, regions); addOptions(categorySelect, categories);
-const setText = (selector, text) => { document.querySelector(selector).textContent = text; };
+const setText = (selector, text) => { const element = document.querySelector(selector); if (element) element.textContent = text; };
+const defaults = {year: 'todos', region: 'todos', category: 'todos'};
+function storedFilters() {
+  try { return JSON.parse(sessionStorage.getItem('tad13-filters') || 'null') || defaults; }
+  catch { return defaults; }
+}
+function saveFilters(filters) { try { sessionStorage.setItem('tad13-filters', JSON.stringify(filters)); } catch { /* Storage is optional. */ } }
+const saved = storedFilters();
+if (yearSelect && ['todos', ...years.map(String)].includes(saved.year)) yearSelect.value = saved.year;
+if (regionSelect && ['todos', ...regions].includes(saved.region)) regionSelect.value = saved.region;
+if (categorySelect && ['todos', ...categories].includes(saved.category)) categorySelect.value = saved.category;
 
 function renderTrend(data, byMonth) {
   const series = byMonth ? grouped(data, 'month', months.map((_, i) => i + 1)).map((item, i) => ({label: months[i], value: item.value})) : grouped(data, 'year', years);
@@ -45,7 +55,7 @@ function renderRegions(data) {
   const max = Math.max(...items.map(i => i.value), 1);
   document.querySelector('#region-bars').innerHTML = items.map((item, i) => `<div class="region-row"><span class="region-rank">${String(i+1).padStart(2,'0')}</span><span class="region-name">${item.label}</span><span class="bar-track"><span style="width:${item.value/max*100}%"></span></span><strong>${fmt.format(item.value)}</strong></div>`).join('');
 }
-function currentFilters() { return {year: yearSelect.value, region: regionSelect.value, category: categorySelect.value}; }
+function currentFilters() { return {year: yearSelect?.value || 'todos', region: regionSelect?.value || 'todos', category: categorySelect?.value || 'todos'}; }
 function currentData() { return filterRows(rows, currentFilters()); }
 function render() {
   const filters = currentFilters();
@@ -57,7 +67,7 @@ function render() {
   setText('#selection-summary', filters.year === 'todos' ? '2020 – 2026' : filters.year);
   setText('#chart-total', fmt.format(total));
   setText('#trend-chip', filters.year === 'todos' ? 'Por año' : 'Por mes');
-  renderTrend(data, filters.year !== 'todos'); renderCategories(data); renderRegions(data);
+  if (document.querySelector('#trend-chart')) { renderTrend(data, filters.year !== 'todos'); renderCategories(data); renderRegions(data); }
   const summary = summarize(data);
   setText('#insight-total', fmt.format(total));
   setText('#top-category', summary.category?.label || 'Sin datos');
@@ -66,8 +76,8 @@ function render() {
   setText('#top-category-share', share(summary.category));
   setText('#top-region-share', share(summary.region));
 }
-[yearSelect, regionSelect, categorySelect].forEach(select => select.addEventListener('change', render));
-document.querySelector('#reset').addEventListener('click', () => { [yearSelect, regionSelect, categorySelect].forEach(select => { select.value = 'todos'; }); render(); });
+[yearSelect, regionSelect, categorySelect].filter(Boolean).forEach(select => select.addEventListener('change', () => { saveFilters(currentFilters()); render(); }));
+document.querySelector('#reset')?.addEventListener('click', () => { [yearSelect, regionSelect, categorySelect].filter(Boolean).forEach(select => { select.value = 'todos'; }); saveFilters(currentFilters()); render(); });
 document.querySelectorAll('.side-nav a').forEach(link => link.addEventListener('click', () => { document.querySelectorAll('.side-nav a').forEach(item => item.classList.remove('active')); link.classList.add('active'); }));
 function addChatMessage(text, kind) {
   const message = document.createElement('div');
@@ -77,15 +87,38 @@ function addChatMessage(text, kind) {
   container.append(message);
   container.scrollTop = container.scrollHeight;
 }
-function ask(question) {
-  if (!question.trim()) return;
-  addChatMessage(question.trim(), 'user');
-  addChatMessage(answerQuestion(question, currentData()), 'bot');
+let chatBusy = false;
+async function ask(question) {
+  const text = question.trim();
+  if (!text || chatBusy) return;
+  chatBusy = true;
+  const submit = document.querySelector('#chat-form button');
+  submit.disabled = true;
+  addChatMessage(text, 'user');
+  addChatMessage('Consultando a Gemini…', 'bot');
+  const pending = document.querySelector('#chat-messages').lastElementChild;
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({question: text, filters: currentFilters()})
+    });
+    const body = await response.json();
+    if (!response.ok) throw new Error(typeof body.detail === 'string' ? body.detail : 'No se pudo procesar la solicitud.');
+    if (typeof body.answer !== 'string' || !body.answer.trim()) throw new Error('El asistente no devolvió una respuesta.');
+    pending.textContent = body.answer;
+  } catch (error) {
+    pending.textContent = error instanceof SyntaxError ? 'El servicio de IA no está disponible. Usa la página servida por el backend.' : (error.message || 'No se pudo conectar con el servicio de IA.');
+  } finally {
+    chatBusy = false;
+    submit.disabled = false;
+    const container = document.querySelector('#chat-messages');
+    container.scrollTop = container.scrollHeight;
+  }
 }
-document.querySelector('#chat-form').addEventListener('submit', event => {
+document.querySelector('#chat-form')?.addEventListener('submit', event => {
   event.preventDefault();
   const input = document.querySelector('#chat-input');
-  ask(input.value); input.value = '';
+  if (!chatBusy && input.value.trim()) { ask(input.value); input.value = ''; }
 });
 document.querySelectorAll('[data-question]').forEach(button => button.addEventListener('click', () => ask(button.dataset.question)));
 function download(type) {
@@ -96,6 +129,6 @@ function download(type) {
   document.body.append(link); link.click(); link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-document.querySelector('#download-data').addEventListener('click', () => download('data'));
-document.querySelector('#download-summary').addEventListener('click', () => download('summary'));
+document.querySelector('#download-data')?.addEventListener('click', () => download('data'));
+document.querySelector('#download-summary')?.addEventListener('click', () => download('summary'));
 render();

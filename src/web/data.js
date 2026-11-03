@@ -31,21 +31,6 @@ export function summarize(data) {
   return {total, category: top('category', categories), region: top('region', regions)};
 }
 
-export function answerQuestion(question, data) {
-  const text = question.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  const {total, category, region} = summarize(data);
-  const format = value => new Intl.NumberFormat('es-CO').format(value);
-  const share = value => (value / total * 100).toFixed(1).replace('.', ',');
-  const warning = ' Todas las cifras son simuladas y corresponden a los filtros actuales.';
-  if (/fuente|origen|siedco|datos reales|vienen|metodolog/.test(text)) return 'Los datos del tablero son generados para esta demostración; no provienen de SIEDCO. La integración y verificación de fuentes oficiales están pendientes.';
-  if (!total) return 'No hay datos simulados para la selección actual. Cambia los filtros e inténtalo de nuevo.';
-  if (/categoria|delito|tipo/.test(text)) return `La categoría con mayor participación es ${category.label}, con ${format(category.value)} registros y ${share(category.value)} % de la selección.${warning}`;
-  if (/region|territorio|departamento|lugar/.test(text)) return `El territorio con más registros es ${region.label}, con ${format(region.value)} registros y ${share(region.value)} % de la selección.${warning}`;
-  if (/resumen|total|cuant|cifra|registro|panorama/.test(text)) return `La selección contiene ${format(total)} registros. La categoría principal es ${category.label} y el territorio con más registros es ${region.label}.${warning}`;
-  if (/filtro|filtrar|seleccion/.test(text)) return 'Usa los menús de periodo, departamento y categoría en la parte superior. Los gráficos, resúmenes, respuestas y descargas reflejan esa selección.';
-  return 'Aún no entiendo esa pregunta. Prueba con “resumen”, “categoría principal”, “territorio” o “de dónde vienen los datos”. Soy un asistente de demostración con respuestas predefinidas, no una IA conectada.';
-}
-
 function csvCell(value) {
   let text = String(value);
   if (/^[\s]*[=+@-]/.test(text)) text = `'${text}`;

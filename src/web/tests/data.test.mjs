@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {makeDemoData, filterRows, sum, summarize, answerQuestion, demoCsv} from '../data.js';
+import {makeDemoData, filterRows, sum, summarize, demoCsv} from '../data.js';
 
 const rows = makeDemoData();
 const filters = {year: '2026', region: 'Atlántico', category: 'Hurto'};
@@ -17,13 +17,6 @@ test('los resúmenes reflejan la selección', () => {
   assert.equal(result.category.label, 'Hurto');
   assert.equal(result.region.label, 'Atlántico');
   assert.equal(summarize([]).total, 0);
-});
-test('el asistente aclara el origen simulado y usa filtros', () => {
-  assert.match(answerQuestion('¿Cuál es la categoría principal?', selection), /Hurto/);
-  assert.match(answerQuestion('¿Cuál es el territorio?', selection), /Atlántico/);
-  assert.match(answerQuestion('¿De dónde vienen los datos?', selection), /no provienen de SIEDCO/);
-  assert.match(answerQuestion('¿Cuál es el resumen?', []), /No hay datos/);
-  assert.match(answerQuestion('pregunta desconocida', selection), /no una IA conectada/);
 });
 test('las descargas identifican datos simulados y respetan la selección', () => {
   const csv = demoCsv(selection, 'data');
