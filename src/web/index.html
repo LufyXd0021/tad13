@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173d33">
+  <title>Observatorio | Prototipo de tendencias</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegación principal">
+      <a class="brand" href="#inicio" aria-label="Observatorio, inicio">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M5 22.5 12 15l5 4 10-11" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27" cy="8" r="2.5" fill="currentColor"/></svg></span>
+        <span><strong>observatorio<span class="brand-dot">.</span></strong><small>Nombre provisional</small></span>
+      </a>
+      <div class="side-label">ESPACIO DE TRABAJO</div>
+      <nav class="side-nav">
+        <a class="nav-item active" href="#inicio"><span data-icon="grid"></span> Vista general <span class="nav-arrow">↗</span></a>
+        <a class="nav-item" href="#tendencias"><span data-icon="chart"></span> Tendencias</a>
+        <a class="nav-item" href="#territorios"><span data-icon="pin"></span> Territorios</a>
+        <a class="nav-item" href="#categorias"><span data-icon="layers"></span> Categorías</a>
+      </nav>
+      <div class="side-label resources-label">PROYECTO</div>
+      <nav class="side-nav"><a class="nav-item" href="#metodologia"><span data-icon="book"></span> Sobre los datos</a></nav>
+      <div class="sidebar-bottom">
+        <div class="side-note"><span class="side-note-icon" data-icon="spark"></span><strong>Un proyecto en construcción</strong><p>Explora el prototipo mientras definimos su identidad y fuentes.</p><a href="#metodologia">Conocer más <span>↗</span></a></div>
+        <div class="side-footer"><span class="avatar">T</span><span><strong>Proyecto TAD-13</strong><small>Entorno de demostración</small></span><span class="footer-dots">···</span></div>
+      </div>
+    </aside>
+    <main class="main" id="inicio">
+      <header class="topbar"><div class="breadcrumb">Proyecto <span>/</span> <strong>Vista general</strong></div><div class="top-actions"><span class="top-status"><i></i> PROTOTIPO</span><span class="top-divider"></span><span class="top-avatar">T</span></div></header>
+      <div class="content">
+        <div class="demo-banner"><span data-icon="info"></span><p><strong>Estás viendo una demostración.</strong> Todos los datos son simulados y no representan cifras reales de criminalidad.</p><a href="#metodologia">Más información <span>↗</span></a></div>
+        <div class="page-heading"><div><div class="eyebrow"><span></span> PANORAMA DE SEGURIDAD EN COLOMBIA</div><h1>Entender los datos,<br><em>visualizar el panorama.</em></h1><p>Un espacio para explorar las tendencias delictivas en Colombia.</p></div><div class="heading-badge"><span class="badge-symbol">✳</span><span>UNA MIRADA A LOS DATOS<small>COLOMBIA · 2020—2026</small></span></div></div>
+        <section class="filter-bar" aria-label="Filtros del tablero"><div class="filter-intro"><span data-icon="filter"></span><div><strong>Explorar datos</strong><small>Personaliza tu vista</small></div></div><div class="filter-controls"><label><span>PERIODO</span><select id="year-filter" aria-label="Filtrar por periodo"><option value="todos">Todos los años</option></select></label><label><span>DEPARTAMENTO</span><select id="region-filter" aria-label="Filtrar por departamento"><option value="todos">Todos los departamentos</option></select></label><label><span>CATEGORÍA</span><select id="category-filter" aria-label="Filtrar por categoría"><option value="todos">Todas las categorías</option></select></label><button class="reset-button" id="reset" type="button" title="Restablecer filtros" aria-label="Restablecer filtros"><span data-icon="refresh"></span></button></div></section>
+        <div class="section-heading overview-heading"><div><span class="section-kicker">01 / RESUMEN</span><h2>El panorama en cifras</h2></div><span class="section-context"><i></i> Datos de demostración <span class="context-divider">/</span> <span id="selection-summary">2020 – 2026</span></span></div>
+        <section class="stat-grid" aria-label="Indicadores de demostración"><article class="stat-card"><div class="stat-top"><span>Registros simulados</span><span class="stat-icon mint" data-icon="file"></span></div><strong id="total-stat">—</strong><p><span class="stat-pill">●</span> Total en la selección</p><div class="stat-line"></div></article><article class="stat-card"><div class="stat-top"><span>Departamentos</span><span class="stat-icon sand" data-icon="pin"></span></div><strong id="regions-stat">—</strong><p>Con datos de ejemplo</p><div class="stat-line sand-line"></div></article><article class="stat-card"><div class="stat-top"><span>Categorías</span><span class="stat-icon lavender" data-icon="layers"></span></div><strong id="categories-stat">—</strong><p>Incluidas en la selección</p><div class="stat-line lavender-line"></div></article><article class="stat-card"><div class="stat-top"><span>Periodo analizado</span><span class="stat-icon blue" data-icon="calendar"></span></div><strong class="period-stat" id="period-stat">—</strong><p>Según filtros seleccionados</p><div class="stat-line blue-line"></div></article></section>
+        <div class="dashboard-grid"><section class="card trend-card" id="tendencias"><div class="card-header"><div><span class="section-kicker">02 / EVOLUCIÓN</span><h3>Cómo cambian los registros</h3><p>Comportamiento de los registros simulados en el tiempo.</p></div><span class="card-chip" id="trend-chip">Por año</span></div><div class="chart-summary"><strong id="chart-total">—</strong><span>registros en el periodo seleccionado</span></div><div id="trend-chart" class="trend-chart" role="img" aria-label="Gráfico de evolución de registros simulados"></div><div class="chart-footer"><span><i></i> Registros simulados</span><small>Fuente: datos de demostración</small></div></section>
+          <section class="card categories-card" id="categorias"><div class="card-header"><div><span class="section-kicker">03 / DISTRIBUCIÓN</span><h3>Por categoría</h3><p>Composición de la selección actual.</p></div><span class="more">···</span></div><div class="donut-wrap"><div id="donut-chart" class="donut-chart"><div class="donut-center"><small>TOTAL</small><strong id="donut-total">—</strong><span>registros</span></div></div></div><div id="category-legend" class="category-legend"></div></section>
+          <section class="card regions-card" id="territorios"><div class="card-header"><div><span class="section-kicker">04 / TERRITORIO</span><h3>Una mirada por departamento</h3><p>Distribución de registros en los territorios de ejemplo.</p></div><span class="card-chip">Registros</span></div><div id="region-bars" class="region-bars"></div><div class="region-footnote">La selección territorial del prototipo no representa la cobertura nacional.</div></section>
+          <section class="card methodology-card" id="metodologia"><div class="method-top"><span class="method-icon" data-icon="book"></span><span>ACERCA DEL PROYECTO</span></div><h3>Datos para comprender,<br><em>no solo para contar.</em></h3><p>Este es un primer borrador de una plataforma basada en datos abiertos SIEDCO. Las cifras mostradas son ficticias mientras se verifican e integran las fuentes oficiales.</p><div class="method-divider"></div><div class="method-bottom"><span><i></i> FUENTES REALES PENDIENTES</span><a href="../../docs/01-propuesta.md">Ver propuesta <span>↗</span></a></div></section></div>
+        <footer class="page-footer"><span>© 2026 TAD-13 · Nombre e identidad por definir</span><span>Hecho para explorar con propósito <span class="footer-star">✳</span></span></footer>
+      </div>
+    </main>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
